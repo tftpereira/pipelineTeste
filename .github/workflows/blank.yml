@@ -1,0 +1,49 @@
+name: Run Apex Tests - Dev Org
+
+# Dispara quando houver push na branch dev e também agendado
+on:
+  push:
+    branches:
+      - dev
+  schedule:
+    - cron: '0 2 * * *'  # Todo dia às 02:00 UTC
+
+jobs:
+  run-apex-tests:
+    runs-on: ubuntu-latest
+
+    steps:
+    # 1️⃣ Checkout (opcional, já que não temos código)
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    # 2️⃣ Instalar Salesforce CLI
+    - name: Install Salesforce CLI
+      run: |
+        curl -s https://developer.salesforce.com/media/salesforce-cli/sfdx-linux-amd64.tar.xz | tar xJ
+        ./sfdx/install
+        sfdx --version
+        sfdx plugins --core
+
+    # 3️⃣ Autenticar na org Dev usando username + password + security token
+    - name: Authenticate to Salesforce Dev Org
+      env:
+        SF_USERNAME: ${{ secrets.SF_USERNAME }}
+        SF_PASSWORD: ${{ secrets.SF_PASSWORD }}
+        SF_SERVERURL: ${{ secrets.SF_SERVERURL }}  # Sandbox: https://test.salesforce.com
+      run: |
+        sfdx auth:password:grant --username $SF_USERNAME --password $SF_PASSWORD --instanceurl $SF_SERVERURL
+        sfdx force:org:display
+
+    # 4️⃣ Rodar todos os testes Apex
+    - name: Run Apex Tests
+      run: |
+        sfdx force:apex:test:run --resultformat junit --wait 10 --outputdir ./test-results
+        cat ./test-results/test-result-*.xml || echo "No test results found"
+
+    # 5️⃣ Upload dos resultados para GitHub Actions
+    - name: Upload Test Results
+      uses: actions/upload-artifact@v3
+      with:
+        name: apex-test-results
+        path: ./test-results
