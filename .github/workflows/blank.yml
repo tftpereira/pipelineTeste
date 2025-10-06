@@ -26,7 +26,7 @@ jobs:
       run: |
         echo "$SF_JWT_KEY" > server.key
         chmod 600 server.key
-        sfdx auth:jwt:grant --clientid $SF_CLIENT_ID --jwtkeyfile server.key --username $SF_USERNAME --instanceurl $SF_SERVERURL
+        sfdx force:auth:jwt:grant --clientid $SF_CLIENT_ID --jwtkeyfile server.key --username $SF_USERNAME --instanceurl $SF_SERVERURL
         sfdx force:org:display
 
     # 4️⃣ Rodar todos os testes Apex
