@@ -15,10 +15,8 @@ jobs:
     # 2️⃣ Instalar Salesforce CLI
     - name: Install Salesforce CLI
       run: |
-        curl -s https://developer.salesforce.com/media/salesforce-cli/sfdx-linux-amd64.tar.xz | tar xJ
-        ./sfdx/install
+        npm install -g sfdx-cli
         sfdx --version
-        sfdx plugins --core
 
     # 3️⃣ Autenticar na org Dev usando username + password + security token
     - name: Authenticate to Salesforce Dev Org
