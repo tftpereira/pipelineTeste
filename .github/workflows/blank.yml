@@ -35,7 +35,7 @@ jobs:
     - name: Run Apex Tests
       id: apex_tests
       run: |
-        sfdx force:apex:test:run --resultformat junit --wait 10 --outputdir ./test-results --codecoverage
+        sfdx force:apex:test:run --resultformat human --wait 10 --outputdir ./test-results --codecoverage
         ls ./test-results
         cat ./test-results/test-result-*.xml || echo "No test results found"
 
