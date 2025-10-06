@@ -25,8 +25,7 @@ jobs:
         SF_PASSWORD: ${{ secrets.SF_PASSWORD }}
         SF_SERVERURL: ${{ secrets.SF_SERVERURL }}  # Sandbox: https://test.salesforce.com
       run: |
-        sfdx auth:password:grant --username $SF_USERNAME --password $SF_PASSWORD --instanceurl $SF_SERVERURL
-        sfdx force:org:display
+        sfdx auth:jwt:grant --clientid <SF_CLIENT_ID> --jwtkeyfile server.key --username <SF_USERNAME> --instanceurl https://test.salesforce.com
 
     # 4️⃣ Rodar todos os testes Apex
     - name: Run Apex Tests
