@@ -13,7 +13,7 @@ jobs:
     # 2️⃣ Instalar Salesforce CLI
     - name: Install Salesforce CLI
       run: |
-        npm install -g sfdx-cli
+        npm install -g @salesforce/cli
         sfdx --version
 
     # 3️⃣ Autenticar na org via JWT
