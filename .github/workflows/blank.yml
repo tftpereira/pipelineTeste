@@ -1,10 +1,9 @@
 name: Run Apex Tests - Dev Org
 
 on:
-  workflow_dispatch:          # Permite rodar manualmente
-  schedule:
-    - cron: '0 2 * * *'      # Opcional: roda todo dia às 02:00 UTC
-
+  push:
+    branches:
+      - main
 jobs:
   run-apex-tests:
     runs-on: ubuntu-latest
