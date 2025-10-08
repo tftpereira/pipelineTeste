@@ -40,11 +40,14 @@ jobs:
           sfdx force:config:set defaultusername=$SF_USERNAME --global
           sfdx force:org:display
 
-      # 5️⃣ Instalar Salesforce Code Analyzer
-      - name: Install Salesforce Code Analyzer
+      - name: Install Salesforce Scanner Plugin
         run: |
-          npm install -g @salesforce/sfdx-scanner
-          sf scanner --version
+          sf plugins:install @salesforce/sfdx-scanner
+            # 5️⃣ Instalar Salesforce Code Analyzer
+            - name: Install Salesforce Code Analyzer
+              run: |
+                npm install -g @salesforce/sfdx-scanner
+                sf scanner --version
 
       # 6️⃣ Executar análise de código (Code Analyzer)
       - name: Run Salesforce Code Analyzer
