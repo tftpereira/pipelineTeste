@@ -49,7 +49,7 @@ jobs:
       # 6️⃣ Executar análise de código (Code Analyzer)
       - name: Run Salesforce Code Analyzer
         run: |
-          sfscanner scan "force-app/main/default/classes" --format sarif --outfile code-analysis.sarif
+          sf scanner scan "force-app/main/default/classes" --format sarif --outfile code-analysis.sarif
 
       # 7️⃣ Upload do SARIF para GitHub Code Scanning
       - name: Upload SARIF to GitHub
