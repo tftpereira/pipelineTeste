@@ -13,8 +13,11 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
- 
-      # 2️⃣ Configurar Node.js (necessário para CLI e scanner)
+      # 1️⃣ Checkout do repositório
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      # 2️⃣ Configurar Node.js
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
@@ -24,7 +27,7 @@ jobs:
       - name: Install Salesforce CLI
         run: |
           npm install -g @salesforce/cli
-          sfdx --version
+          sf --version
 
       # 4️⃣ Autenticar na org via JWT
       - name: Authenticate via JWT
@@ -36,37 +39,38 @@ jobs:
         run: |
           echo "$SF_JWT_KEY" > server.key
           chmod 600 server.key
-          sfdx force:auth:jwt:grant --clientid $SF_CLIENT_ID --jwtkeyfile server.key --username $SF_USERNAME --instanceurl $SF_SERVERURL
-          sfdx force:config:set defaultusername=$SF_USERNAME --global
-          sfdx force:org:display
+          sf auth:jwt:grant --clientid $SF_CLIENT_ID --jwtkeyfile server.key --username $SF_USERNAME --instanceurl $SF_SERVERURL
+          sf config:set defaultusername=$SF_USERNAME --global
+          sf org:display
 
+      # 5️⃣ Instalar plugin Salesforce Scanner
       - name: Install Salesforce Scanner Plugin
         run: |
           sf plugins:install @salesforce/sfdx-scanner
-            # 5️⃣ Instalar Salesforce Code Analyzer
-            - name: Install Salesforce Code Analyzer
-              run: |
-                npm install -g @salesforce/sfdx-scanner
-                sf scanner --version
 
-      # 6️⃣ Executar análise de código (Code Analyzer)
+      # 6️⃣ Verificar versão do Scanner
+      - name: Verify Salesforce Scanner
+        run: |
+          sf scanner --version
+
+      # 7️⃣ Executar análise de código (Code Analyzer)
       - name: Run Salesforce Code Analyzer
         run: |
           sf scanner scan "force-app/main/default/classes" --format sarif --outfile code-analysis.sarif
 
-      # 7️⃣ Upload do SARIF para GitHub Code Scanning
+      # 8️⃣ Upload do SARIF para GitHub Code Scanning
       - name: Upload SARIF to GitHub
         uses: github/codeql-action/upload-sarif@v2
         with:
           sarif_file: code-analysis.sarif
 
-      # 8️⃣ Executar testes Apex e coletar cobertura
+      # 9️⃣ Executar testes Apex e coletar cobertura
       - name: Run Apex Tests with Code Coverage
         run: |
-          sfdx force:apex:test:run --resultformat json --codecoverage --wait 20 --outputdir test-results
+          sf apex test run --resultformat json --codecoverage --wait 20 --outputdir test-results
           cat test-results/test-result.json
 
-      # 9️⃣ Upload dos artefatos de teste
+      # 🔟 Upload dos artefatos de teste
       - name: Upload Test Artifacts
         uses: actions/upload-artifact@v4
         with:
