@@ -1,6 +1,11 @@
 name: Salesforce Code Analyzer Workflow
 on:
+  push:
+    branches:
+      - main
   pull_request:
+    branches:
+      - main
 jobs:
   salesforce-code-analyzer-workflow:
     permissions:
