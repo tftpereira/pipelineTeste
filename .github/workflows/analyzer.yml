@@ -1,4 +1,4 @@
-name: Salesforce Code Analyzer Workflow
+name: Salesforce Code Analyzer Workflow 
 on:
   push:
     branches:
