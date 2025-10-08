@@ -51,12 +51,12 @@ jobs:
       # 6️⃣ Verificar versão do Scanner
       - name: Verify Salesforce Scanner
         run: |
-          sf scanner --version
+          sfscanner --version
 
       # 7️⃣ Executar análise de código (Code Analyzer)
       - name: Run Salesforce Code Analyzer
         run: |
-          sf scanner scan "force-app/main/default/classes" --format sarif --outfile code-analysis.sarif
+          sfscanner scan "force-app/main/default/classes" --format sarif --outfile code-analysis.sarif
 
       # 8️⃣ Upload do SARIF para GitHub Code Scanning
       - name: Upload SARIF to GitHub
