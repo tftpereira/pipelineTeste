@@ -43,19 +43,17 @@ jobs:
           sf config:set defaultusername=$SF_USERNAME --global
           sf org:display
 
-      # 5️⃣ Instalar plugin Salesforce Scanner
-      - name: Install Salesforce Scanner Plugin
+      # 5️⃣ Instalar Salesforce Code Analyzer (Scanner)
+      - name: Install Salesforce Code Analyzer
         run: |
-          sf plugins:install @salesforce/sfdx-scanner
-
-      # 6️⃣ Verificar versão do Scanner
-      - name: Verify Salesforce Scanner
-        run: |
+          npm install -g @salesforce/sfdx-scanner
+          export PATH="$(npm bin -g):$PATH"
           sfscanner --version
 
-      # 7️⃣ Executar análise de código (Code Analyzer)
+      # 6️⃣ Executar análise de código (gera arquivo SARIF)
       - name: Run Salesforce Code Analyzer
         run: |
+          export PATH="$(npm bin -g):$PATH"
           sfscanner scan "force-app/main/default/classes" --format sarif --outfile code-analysis.sarif
 
       # 8️⃣ Upload do SARIF para GitHub Code Scanning
