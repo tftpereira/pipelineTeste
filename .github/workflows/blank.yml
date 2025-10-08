@@ -1,4 +1,4 @@
-name: Run Apex Tests - Dev Org 
+name: Run Apex Tests - Dev Org
  
 on:
   push:
@@ -9,6 +9,11 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+	
+	- name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20'
     
     # 2️⃣ Instalar Salesforce CLI
     - name: Install Salesforce CLI
@@ -30,12 +35,23 @@ jobs:
         sfdx force:config:set defaultusername=$SF_USERNAME --global
         sfdx force:org:display
         
+		
+	 - name: Install Salesforce Code Analyzer
+        run: |
+          npm install -g @salesforce/sfdx-scanner
+          sfscanner --version
+
+	- name: Upload SARIF to GitHub
+        uses: github/codeql-action/upload-sarif@v2
+        with:
+          sarif_file: code-analysis.sarif
+
 
     # 4️⃣ Rodar todos os testes Apex
     - name: Run Apex Tests
       id: apex_tests
       run: |
-        sfdx force:apex:test:run --resultformat json --wait 10 --outputdir ./test-results --codecoverage
+        sfdx force:apex:test:run --resultformat human --wait 10 --outputdir ./test-results --codecoverage
         ls ./test-results
         cat ./test-results/test-result-*.xml || echo "No test results found"
 
